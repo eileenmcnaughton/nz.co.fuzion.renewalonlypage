@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<extension key="nz.co.fuzion.renewalonlypage" type="module">
+  <file>renewalonlypage</file>
+  <name>Renewal Only Pages</name>
+  <description>Module limits people's ability to use specified contribution pages if they are not logged in and eligble to renew a membership on the page</description>
+  <license>AGPL</license>
+  <maintainer>
+    <author>Eileen</author>
+    <email>eileen@fuzion.co.nz</email>
+  </maintainer>
+  <releaseDate>2013-11-18</releaseDate>
+  <version>1.0</version>
+  <develStage>alpha</develStage>
+  <compatibility>
+    <ver>4.4</ver>
+  </compatibility>
+  <comments>People using specified pages will be able to access them only if they have an eligible membership</comments>
+  <civix>
+    <namespace>CRM/Renewalonlypage</namespace>
+  </civix>
+</extension>
