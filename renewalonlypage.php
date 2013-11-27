@@ -68,3 +68,43 @@ function renewalonlypage_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
 function renewalonlypage_civicrm_managed(&$entities) {
   return _renewalonlypage_civix_civicrm_managed($entities);
 }
+
+/**
+ * Implementation of hook_buildAmount
+ */
+
+function renewalonlypage_civicrm_buildAmount($pageType, &$form, &$amount) {
+  $validFormID = 265;
+  $loggedOutRedirect = 'http://devnew.imba.com/user/login';
+  $noOptionsRedirect = 'http://devnew.imba.com/blog/supporter/random-page';
+  if($pageType != 'membership' || $form->_id != $validFormID) {
+    return;
+  }
+  $contact_id = CRM_Core_Session::singleton()->get('userID');
+  if(!$contact_id) {
+    CRM_Utils_System::redirect($loggedOutRedirect);
+  }
+  $memberships = civicrm_api3('membership', 'get', array(
+    'active_only' => TRUE,
+    'contact_id' => CRM_Core_Session::singleton()->get('userID'))
+  );
+  $membershipTypes = array();
+  foreach ($memberships['values'] as $membership) {
+    $membershipTypes[$membership['membership_type_id']] = $membership['membership_type_id'];
+  }
+  $optionCount = 0;
+  foreach ($amount as $priceFieldID => $priceField) {
+    foreach ($priceField['options'] as $option) {
+      if(!array_key_exists($option['membership_type_id'], $membershipTypes)) {
+        unset($amount[$priceFieldID]['options'][$option['id']]);
+      }
+      elseif(count($membershipTypes) == 1) {
+        $amount[$priceFieldID]['options'][$option['id']]['is_default'] = 1;
+      }
+    }
+    $optionCount += count($amount[$priceFieldID]['options']);
+  }
+  if($optionCount == 0) {
+    CRM_Utils_System::redirect($noOptionsRedirect);
+  }
+}
