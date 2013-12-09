@@ -77,7 +77,12 @@ function renewalonlypage_civicrm_buildAmount($pageType, &$form, &$amount) {
   $validFormID = 265;
   $loggedOutRedirect = 'http://devnew.imba.com/user/login';
   $noOptionsRedirect = 'http://devnew.imba.com/blog/supporter/random-page';
-  if($pageType != 'membership' || $form->_id != $validFormID) {
+  if($pageType != 'membership' ||
+    !in_array(get_class($form), array(
+      'CRM_Contribute_Form_Contribution',
+      'CRM_Contribute_Form_Contribution_Main',
+    )) ||
+    $form->_id != $validFormID) {
     return;
   }
   $contact_id = CRM_Core_Session::singleton()->get('userID');
